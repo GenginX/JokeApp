@@ -7,16 +7,20 @@ import com.kaczmar.JokesApp.services.external.ExternalJokeProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class JokeDispatcherService {
 
-    @Autowired
-    List<ExternalJokeProvider> externalJokeProvider;
+    private final List<ExternalJokeProvider> externalJokeProvider;
 
+    public JokeDispatcherService(List<ExternalJokeProvider> externalJokeProvider) {
+        this.externalJokeProvider = externalJokeProvider;
+    }
 
     public Joke provideRandomJoke() throws JokeException {
         return externalJokeProvider.get(getRandomNumber()).getRandomJoke();
@@ -27,7 +31,10 @@ public class JokeDispatcherService {
     }
 
     public Set<String> provideJokeCategories() throws JokeException {
-        return externalJokeProvider.get(getRandomNumber()).getAvailableCategories();
+        return externalJokeProvider.stream()
+                .map(ExternalJokeProvider::getAvailableCategories)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toSet());
     }
 
     private int getRandomNumber(){
