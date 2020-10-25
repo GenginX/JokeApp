@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class Sv443JokeProvider implements ExternalJokeProvider {
@@ -79,6 +80,10 @@ public class Sv443JokeProvider implements ExternalJokeProvider {
         while(elements.hasNext()){
             categoriesResult.add(elements.next().asText());
         }
+
+//        return jsonNode.findValues("categories").stream()
+//                .map(JsonNode::asText)
+//                .collect(Collectors.toSet());
 
         return categoriesResult;
     }
